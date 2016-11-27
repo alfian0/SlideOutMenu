@@ -36,7 +36,7 @@ class ContainerController: UIViewController {
     private var cv: ICenterViewController!
     private var rv: UIViewController?
     private var lv: UIViewController?
-    internal var delegate: ISlideOutMenu? {
+    public var delegate: ISlideOutMenu? {
         didSet {
             self.setVc()
         }
