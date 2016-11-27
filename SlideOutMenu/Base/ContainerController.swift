@@ -14,22 +14,23 @@ enum SlideOutState {
     case RightPanelExpanded
 }
 
-protocol ISlideOutMenu {
+public protocol ISlideOutMenu {
     func setCenterViewController() -> ICenterViewController
     func setLeftViewController() -> UIViewController?
     func setRightViewController() -> UIViewController?
 }
 
-protocol ISlideOutMenuDelegate {
+public protocol ISlideOutMenuDelegate {
     func toggleLeftPanel()
     func toggleRightPanel()
     func collapseSidePanels()
 }
 
-protocol ICenterViewController {
+public protocol ICenterViewController {
     var delegate: ISlideOutMenuDelegate! { get set }
 }
 
+public
 class ContainerController: UIViewController {
     private var nv: UINavigationController!
     private var cv: ICenterViewController!
@@ -48,7 +49,7 @@ class ContainerController: UIViewController {
     }
     private var offset: CGFloat = 60
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
     }
@@ -181,7 +182,7 @@ extension ContainerController: UIGestureRecognizerDelegate {
 }
 
 extension ContainerController: ISlideOutMenuDelegate {
-    func toggleLeftPanel() {
+    public func toggleLeftPanel() {
         let notAlreadyExpanded = (currentState != .LeftPanelExpanded)
         if notAlreadyExpanded {
             self.addLeftMenu()
@@ -189,7 +190,7 @@ extension ContainerController: ISlideOutMenuDelegate {
         self.animateLeftPanel(notAlreadyExpanded)
     }
     
-    func toggleRightPanel() {
+    public func toggleRightPanel() {
         let notAlreadyExpanded = (currentState != .RightPanelExpanded)
         if notAlreadyExpanded {
             self.addRightMenu()
@@ -197,7 +198,7 @@ extension ContainerController: ISlideOutMenuDelegate {
         self.animateRightPanel(notAlreadyExpanded)
     }
     
-    func collapseSidePanels() {
+    public func collapseSidePanels() {
         switch (currentState) {
         case .RightPanelExpanded:
             toggleRightPanel()
