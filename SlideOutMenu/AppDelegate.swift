@@ -22,15 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = ViewController()
         self.window?.makeKeyAndVisible()
         
-//        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
-//            window.backgroundColor = UIColor.whiteColor()
-//            window.makeKeyAndVisible()
-//        self.window = window
-//        
-//        let vc = ViewController()
-//        let nc = UINavigationController(rootViewController:vc)
-//            window.rootViewController = nc
-        
         return true
     }
 
