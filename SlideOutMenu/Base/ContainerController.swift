@@ -64,9 +64,6 @@ class ContainerController: UIViewController {
         self.view.addSubview(self.nv.view)
         self.addChildViewController(self.nv)
         self.nv.didMoveToParentViewController(self)
-        
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerController.handlePanGesture(_:)))
-        nv.view.addGestureRecognizer(panGestureRecognizer)
     }
     
     private func addLeftMenu() {
