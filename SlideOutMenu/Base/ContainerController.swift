@@ -78,6 +78,7 @@ class ContainerController: UIViewController {
         guard let leftViewController = self.lv else {
             return
         }
+        leftViewController.view.frame = CGRectMake(0, 0, self.view.frame.width - 60, self.view.frame.height)
         self.addSideMenu(leftViewController)
     }
     
@@ -95,6 +96,7 @@ class ContainerController: UIViewController {
         guard let rightViewController = self.rv else {
             return
         }
+        rightViewController.view.frame = CGRectMake(self.offset, 0, self.view.frame.width - 60, self.view.frame.height)
         self.addSideMenu(rightViewController)
     }
     
