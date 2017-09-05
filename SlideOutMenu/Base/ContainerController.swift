@@ -9,9 +9,9 @@
 import UIKit
 
 enum SlideOutState {
-    case BothCollapsed
-    case LeftPanelExpanded
-    case RightPanelExpanded
+    case bothCollapsed
+    case leftPanelExpanded
+    case rightPanelExpanded
 }
 
 public protocol ISlideOutMenu {
@@ -30,31 +30,34 @@ public protocol ICenterViewController {
     var delegate: ISlideOutMenuDelegate! { get set }
 }
 
-public
+open
 class ContainerController: UIViewController {
-    private var nv: UINavigationController!
-    private var cv: ICenterViewController!
-    private var rv: UIViewController?
-    private var lv: UIViewController?
-    public var delegate: ISlideOutMenu? {
+    fileprivate var nv: UINavigationController!
+    fileprivate var cv: ICenterViewController!
+    fileprivate var rv: UIViewController?
+    fileprivate var lv: UIViewController?
+    
+    open var delegate: ISlideOutMenu? {
         didSet {
             self.setVc()
         }
     }
-    private var currentState: SlideOutState = .BothCollapsed {
+    
+    fileprivate var currentState: SlideOutState = .bothCollapsed {
         didSet {
-            let shouldShowShadow = (currentState != .BothCollapsed)
+            let shouldShowShadow = (currentState != .bothCollapsed)
             self.showShadowForCenterViewController(shouldShowShadow)
         }
     }
-    private var offset: CGFloat = 60
     
-    override public func viewDidLoad() {
+    fileprivate var offset: CGFloat = 60
+    
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
     }
     
-    private func setVc() {
+    fileprivate func setVc() {
         guard let delegate = self.delegate else {
             return
         }
@@ -64,13 +67,13 @@ class ContainerController: UIViewController {
         
         self.view.addSubview(self.nv.view)
         self.addChildViewController(self.nv)
-        self.nv.didMoveToParentViewController(self)
+        self.nv.didMove(toParentViewController: self)
         
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handlePanGesture:"))
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerController.handlePanGesture(_:)))
         nv.view.addGestureRecognizer(panGestureRecognizer)
     }
     
-    private func addLeftMenu() {
+    fileprivate func addLeftMenu() {
         guard let delegate = self.delegate else {
             return
         }
@@ -78,17 +81,17 @@ class ContainerController: UIViewController {
         guard let leftViewController = self.lv else {
             return
         }
-        leftViewController.view.frame = CGRectMake(0, 0, self.view.frame.width - 60, self.view.frame.height)
+        leftViewController.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width - self.offset, height: self.view.frame.height)
         self.addSideMenu(leftViewController)
     }
     
-    private func addSideMenu(vc: UIViewController) {
-        self.view.insertSubview(vc.view, atIndex: 0)
+    fileprivate func addSideMenu(_ vc: UIViewController) {
+        self.view.insertSubview(vc.view, at: 0)
         self.addChildViewController(vc)
-        vc.didMoveToParentViewController(self)
+        vc.didMove(toParentViewController: self)
     }
     
-    private func addRightMenu() {
+    fileprivate func addRightMenu() {
         guard let delegate = self.delegate else {
             return
         }
@@ -96,17 +99,17 @@ class ContainerController: UIViewController {
         guard let rightViewController = self.rv else {
             return
         }
-        rightViewController.view.frame = CGRectMake(self.offset, 0, self.view.frame.width - 60, self.view.frame.height)
+        rightViewController.view.frame = CGRect(x: self.offset, y: 0, width: self.view.frame.width - self.offset, height: self.view.frame.height)
         self.addSideMenu(rightViewController)
     }
     
-    func animateLeftPanel(shouldExpand: Bool) {
+    func animateLeftPanel(_ shouldExpand: Bool) {
         if (shouldExpand) {
-            self.currentState = .LeftPanelExpanded
-            self.animateCenterPanelXPosition(CGRectGetWidth(self.nv.view.frame) - self.offset)
+            self.currentState = .leftPanelExpanded
+            self.animateCenterPanelXPosition(self.nv.view.frame.width - self.offset)
         } else {
             self.animateCenterPanelXPosition(0) { _ in
-                self.currentState = .BothCollapsed
+                self.currentState = .bothCollapsed
                 guard let lv = self.lv else { return }
                 lv.view.removeFromSuperview()
                 self.lv = nil
@@ -114,19 +117,19 @@ class ContainerController: UIViewController {
         }
     }
     
-    private func animateCenterPanelXPosition(targetPosition: CGFloat, completion: ((Bool) -> Void)! = nil) {
-        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: {
+    fileprivate func animateCenterPanelXPosition(_ targetPosition: CGFloat, completion: ((Bool) -> Void)! = nil) {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
             self.nv.view.frame.origin.x = targetPosition
             }, completion: completion)
     }
     
-    func animateRightPanel(shouldExpand: Bool) {
+    func animateRightPanel(_ shouldExpand: Bool) {
         if (shouldExpand) {
-            self.currentState = .RightPanelExpanded
-            self.animateCenterPanelXPosition(-CGRectGetWidth(self.nv.view.frame) + self.offset)
+            self.currentState = .rightPanelExpanded
+            self.animateCenterPanelXPosition(-self.nv.view.frame.width + self.offset)
         } else {
             self.animateCenterPanelXPosition(0) { _ in
-                self.currentState = .BothCollapsed
+                self.currentState = .bothCollapsed
                 guard let rv = self.rv else { return }
                 rv.view.removeFromSuperview()
                 self.rv = nil
@@ -134,23 +137,23 @@ class ContainerController: UIViewController {
         }
     }
     
-    func showShadowForCenterViewController(shouldShowShadow: Bool) {
+    func showShadowForCenterViewController(_ shouldShowShadow: Bool) {
         if (shouldShowShadow) {
             self.nv.view.layer.shadowOpacity = 0.8
-            self.nv.view.layer.shadowColor = UIColor.lightGrayColor().CGColor
+            self.nv.view.layer.shadowColor = UIColor.lightGray.cgColor
         } else {
             self.nv.view.layer.shadowOpacity = 0.0
-            self.nv.view.layer.shadowColor = UIColor.lightGrayColor().CGColor
+            self.nv.view.layer.shadowColor = UIColor.lightGray.cgColor
         }
     }
 }
 
 extension ContainerController: UIGestureRecognizerDelegate {
-    @objc private func handlePanGesture(recognizer: UIPanGestureRecognizer) {
-        let isLefttoRight = (recognizer.velocityInView(self.view).x > 0)
+    @objc fileprivate func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+        let isLefttoRight = (recognizer.velocity(in: self.view).x > 0)
         switch (recognizer.state) {
-        case .Began:
-            if (self.currentState == .BothCollapsed) {
+        case .began:
+            if (self.currentState == .bothCollapsed) {
                 if isLefttoRight {
                     self.addLeftMenu()
                 } else {
@@ -158,15 +161,15 @@ extension ContainerController: UIGestureRecognizerDelegate {
                 }
                 self.showShadowForCenterViewController(true)
             }
-        case .Changed:
+        case .changed:
             guard let recognizerView = recognizer.view else {
                 return
             }
             if (self.lv != nil) || (self.rv != nil) {
-                recognizerView.center.x = recognizerView.center.x + recognizer.translationInView(self.view).x
-                recognizer.setTranslation(CGPointZero, inView: self.view)
+                recognizerView.center.x = recognizerView.center.x + recognizer.translation(in: self.view).x
+                recognizer.setTranslation(CGPoint.zero, in: self.view)
             }
-        case .Ended:
+        case .ended:
             guard let recognizerView = recognizer.view else {
                 return
             }
@@ -185,7 +188,7 @@ extension ContainerController: UIGestureRecognizerDelegate {
 
 extension ContainerController: ISlideOutMenuDelegate {
     public func toggleLeftPanel() {
-        let notAlreadyExpanded = (currentState != .LeftPanelExpanded)
+        let notAlreadyExpanded = (currentState != .leftPanelExpanded)
         if notAlreadyExpanded {
             self.addLeftMenu()
         }
@@ -193,7 +196,7 @@ extension ContainerController: ISlideOutMenuDelegate {
     }
     
     public func toggleRightPanel() {
-        let notAlreadyExpanded = (currentState != .RightPanelExpanded)
+        let notAlreadyExpanded = (currentState != .rightPanelExpanded)
         if notAlreadyExpanded {
             self.addRightMenu()
         }
@@ -202,9 +205,9 @@ extension ContainerController: ISlideOutMenuDelegate {
     
     public func collapseSidePanels() {
         switch (currentState) {
-        case .RightPanelExpanded:
+        case .rightPanelExpanded:
             toggleRightPanel()
-        case .LeftPanelExpanded:
+        case .leftPanelExpanded:
             toggleLeftPanel()
         default:
             break
