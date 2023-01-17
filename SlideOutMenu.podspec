@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'SlideOutMenu'
-  s.version          = '0.1.2'
+  s.version          = '0.2.2'
   s.summary          = 'This simple Slide Out Menu.'
   s.description      = <<-DESC
                         This simple Slide Out Menu implementation.
