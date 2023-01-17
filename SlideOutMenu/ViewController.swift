@@ -45,7 +45,7 @@ class CenterViewController: UIViewController, ICenterViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.organize, target: self, action: #selector(self.actionButton(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.organize, target: self, action: #selector(self.actionButton(_:)))
     }
     
     @objc func actionButton(_ sender: UIButton) {

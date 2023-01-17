@@ -66,8 +66,8 @@ class ContainerController: UIViewController {
         self.nv = UINavigationController(rootViewController: self.cv as! UIViewController)
         
         self.view.addSubview(self.nv.view)
-        self.addChildViewController(self.nv)
-        self.nv.didMove(toParentViewController: self)
+        self.addChild(self.nv)
+        self.nv.didMove(toParent: self)
         
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerController.handlePanGesture(_:)))
         nv.view.addGestureRecognizer(panGestureRecognizer)
@@ -87,8 +87,8 @@ class ContainerController: UIViewController {
     
     fileprivate func addSideMenu(_ vc: UIViewController) {
         self.view.insertSubview(vc.view, at: 0)
-        self.addChildViewController(vc)
-        vc.didMove(toParentViewController: self)
+        self.addChild(vc)
+        vc.didMove(toParent: self)
     }
     
     fileprivate func addRightMenu() {
@@ -118,7 +118,7 @@ class ContainerController: UIViewController {
     }
     
     fileprivate func animateCenterPanelXPosition(_ targetPosition: CGFloat, completion: ((Bool) -> Void)! = nil) {
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: UIView.AnimationOptions(), animations: {
             self.nv.view.frame.origin.x = targetPosition
             }, completion: completion)
     }

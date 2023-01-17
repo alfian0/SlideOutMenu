@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Alfiansyah' => 'alfian.official.mail@gmail.com' }
   s.source           = { :git => 'https://github.com/alfian0/SlideOutMenu.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
   s.source_files = 'SlideOutMenu/Base/*.swift'
 end
